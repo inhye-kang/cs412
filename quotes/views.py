@@ -41,7 +41,7 @@ def quotes(request):
     '''
     rndm = random.randint(0,2)
     # this template will present the response
-    template_name = "quotes/quotes.html"
+    template_name = "quotes/quote.html"
 
 
     # create a dictionary of context variables
