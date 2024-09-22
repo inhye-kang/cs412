@@ -1,0 +1,68 @@
+body {
+    background-image: linear-gradient(to bottom right, rgb(193, 228, 250), rgb(246, 246, 208));
+    font-family: Helvetica, sans-serif;
+    margin:0x;
+    color:rgba(240, 112, 38, 0.953);
+    font-size: 20px;
+    text-decoration: none;
+}
+
+h1 {
+    text-align: center;
+    align-items: top;
+}
+
+p {
+    font-size: 40px;
+}
+
+img {
+    width:20%;
+}
+
+nav {
+    padding-top: 5px;
+    align-items: top;
+    text-decoration: none;
+}
+
+nav ul a{
+    margin-right: 30px;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+a:visited { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
+a:hover { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
+a:focus { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
+a:hover, a:active { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
+
+.center {
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+div {
+    text-align:center;
+    margin-bottom:0%;
+}
+
+table {
+    border: 1px solid;
+    border-color: white;
+    align-items: center;
+    width: 100%;
+    font-size: 15px;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    padding: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
