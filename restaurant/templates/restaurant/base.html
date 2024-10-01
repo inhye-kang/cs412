@@ -1,0 +1,29 @@
+<!-- restaurant/templates/restaurant/base.html
+ base page from which all other pages will inherit.
+ put common code here, specific code in separate pages
+ -->
+ {% load static %}
+ <html>
+     <head>
+         <link rel="stylesheet" href="{% static 'styles.css' %}">
+     </head>
+     <body>
+ 
+         <nav>
+             <ul>
+                 <!-- <a href="/quotes/">Home</a> -->
+                 <!-- <a href="/quotes/about">About</a> -->
+                 <!-- use scriptlet url function to look up url by name -->
+                 <a href="{% url 'main' %}">Home</a>
+                 <a href="{% url 'order' %}">Order</a>
+                 <a href="{% url 'confirmation' %}">All Quotes</a>
+             </ul>
+         </nav>
+         <div>
+         {% block content %}
+         <!-- put interesting/specific stuff here -->
+         {% endblock %}
+         This page was generated at {{current_time}} by inhye@bu.edu.
+         </div>    
+     </body>
+ </html>
