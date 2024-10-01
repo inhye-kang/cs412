@@ -1,0 +1,53 @@
+<!-- restaurant/templates/restaurant/order.html -->
+{% extends 'restaurant/base.html' %}
+{% block content %}
+    <head>
+        <title>Order</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+    <body>
+        <h1>Order</h1>
+        <form method="post" action="{% url 'confirmation' %}">
+            {% csrf_token %}
+            <!-- Checkboxes for selecting items -->
+            <input type="checkbox" name="items" value="daily_special"> Daily Special: {{daily_special}} ${{special_price}}<br>
+            <input type="checkbox" name="items" value="Cheese Pizza" id="cheesePizza"> Cheese Pizza<br>
+            <div id="extraCheeseDropdown" style="display:none; margin-left: 20px;">
+                <label for="extraCheese">Extra Cheese:</label>
+                <select name="extraCheese" id="extraCheese">
+                    <option value="No Extra">No Extra</option>
+                    <option value="Light Extra">Light Extra</option>
+                    <option value="Normal Extra">Normal Extra</option>
+                    <option value="Heavy Extra">Heavy Extra</option>
+                </select><br>
+            </div>
+            <input type="checkbox" name="items" value="Pepperoni Pizza"> Pepperoni Pizza $15<br>
+            <input type="checkbox" name="items" value="White Pizza"> White Pizza $14<br>
+            <h3>Special Instructions(Optional):</h3>
+            <div><textarea name="special_instructions" rows="3" cols="60"></textarea></div>
+            </p>
+            <p>
+            <h3>Customer Contact Information</h3>
+
+            <div>Name:</div> <div><input name="name"></div>
+            <div>Phone:</div> <div><input name="phone"></div>
+
+            <div>Email:</div> <div><input name="email"></div>
+            </p>
+
+            <p>
+            <h3>Place your order!</h3>
+            <button type="submit">Confirm Order</button>
+            </p>
+        </form>
+        <script>
+            document.getElementById('cheesePizza').onchange = function() {
+                document.getElementById('extraCheeseDropdown').style.display = this.checked ? 'block' : 'none';
+            };
+        </script>
+        
+        <hr>
+        
+    </body>
+
+    {% endblock %}

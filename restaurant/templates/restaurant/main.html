@@ -1,0 +1,23 @@
+<!-- restaurant/templates/restaurant/main.html -->
+{% extends 'restaurant/base.html' %}
+{% block content %}
+    <head>
+        <title>Pizza Near Me</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+    <body>
+        <h1>Welcome to Pizza Near Me</h1>
+        <img src="/static/pizza.png" alt="pizza">
+        <p>We are sure you Googled "pizza near me" to get here.</p>
+        <p>You can now have the best pizza near you!</p>
+        <h3>Hours of Operation</h3>
+        <ul>
+            <li>Sun - Thurs: 11AM - 12AM</li>
+            <li>Fri - Sat: 11AM - 2AM</li>
+        </ul>
+        <h3>1016 Commonwealth Avenue, Boston, MA 02215</h3>
+        <hr>
+        
+    </body>
+
+    {% endblock %}
