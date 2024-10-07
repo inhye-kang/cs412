@@ -1,8 +1,8 @@
 body {
     background-image: linear-gradient(to bottom right, rgb(193, 228, 250), rgb(246, 246, 208));
     font-family: Helvetica, sans-serif;
-    margin:0x;
-    color:rgba(240, 112, 38, 0.953);
+    margin: 0;
+    color: rgba(240, 112, 38, 0.953);
     font-size: 20px;
     text-decoration: none;
 }
@@ -17,7 +17,10 @@ p {
 }
 
 img {
-    width:20%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 nav {
@@ -26,7 +29,7 @@ nav {
     text-decoration: none;
 }
 
-nav ul a{
+nav ul a {
     margin-right: 30px;
 }
 
@@ -34,35 +37,45 @@ nav a {
     text-decoration: none;
 }
 
-a:visited { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
-a:hover { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
-a:focus { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
-a:hover, a:active { text-decoration: none; color:rgba(240, 112, 38, 0.953); }
+a:visited { text-decoration: none; color: rgba(240, 112, 38, 0.953); }
+a:hover { text-decoration: none; color: rgba(240, 112, 38, 0.953); }
+a:focus { text-decoration: none; color: rgba(240, 112, 38, 0.953); }
+a:hover, a:active { text-decoration: none; color: rgba(240, 112, 38, 0.953); }
 
 .center {
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 div {
-    text-align:center;
-    margin-bottom:0%;
+    text-align: center;
+    margin-bottom: 0%;
 }
 
-table {
-    border: 1px solid;
-    border-color: white;
-    align-items: center;
-    width: 100%;
-    font-size: 15px;
+.table-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px; 
 }
 
-th, td {
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    padding: 15px;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+.profile-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 30%;
+    background-color: white;
+}
+
+.profile-card img {
+    margin-bottom: 10px;
+}
+
+.profile-card p {
+    margin: 5px 0;
+    color: black;
+    font-size: 18px;
+}
 
