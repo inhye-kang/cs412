@@ -20,17 +20,6 @@ class ShowAllView(ListView):
         context['current_time'] = timezone.now()
         return context
     
-class ShowProfileView(DetailView):
-    '''Show the details for one profile.'''
-    model = Profile
-    template_name = 'mini_fb/show_profile.html'
-    context_object_name = 'profile'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['current_time'] = timezone.now()
-        return context
-    
 class CreateProfileView(CreateView):
     '''create new profile'''
     form_class = CreateProfileForm
@@ -71,12 +60,12 @@ class CreateStatusMessageView(CreateView):
         context['current_time'] = timezone.now()
         return context
     
-""" class CreateCommentView(CreateView):
+class CreateCommentView(CreateView):
     form_class = CreateCommentForm
     template_name = "create_comment_form.html"
 
     def get_success_url(self) -> str:
-        return reverse("show_all") """
+        return reverse("show_all")
     
 class ShowProfileView(DetailView):
     '''Show the details for one profile.'''

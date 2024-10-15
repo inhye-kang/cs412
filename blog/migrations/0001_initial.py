@@ -26,8 +26,7 @@ class Migration(migrations.Migration):
                 ("last_name", models.CharField(max_length=100)),
                 ("city", models.CharField(max_length=100)),
                 ("email", models.EmailField(max_length=254, unique=True)),
-                ("image_url", models.URLField(blank=True)),
-
+                ("profile_image_url", models.URLField()),
             ],
         ),
     ]

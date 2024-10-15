@@ -1,27 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini FB</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Welcome to Mini FB</h1>
+{% load static %}
+<html>
+    <head>
+        <title>Mini Facebook</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <style>
+          
+          body {
+                padding-top: 1%;
+            }
+            .form-table {
+                margin: 0 auto; 
+            }
+
+            .form-table textarea, .form-table input[type="url"] {
+                width: 300px; 
+                height: 30px; 
+                resize: none; 
+            }
+        </style>
+    </head>
+    <body>
+        <header><h1>Mini Facebook</h1></header>
         <nav>
-            <!-- Future navigation links go here -->
+            <ul>
+                <a href="{% url 'show_all_profiles' %}">Home</a>
+                <a href="{% url 'create_profile' %}">Create Profile</a>
+            </ul>
         </nav>
-    </header>
-
-    <div class="content">
+        <div>
         {% block content %}
-        <!-- Child templates will override this block -->
-        {% endblock content %}
-    </div>
-
-    <footer>
+        <!-- put interesting/specific stuff here -->
+        {% endblock %}
         This page was generated at {{current_time}} by inhye@bu.edu.
-    </footer>
-</body>
+        </div>    
+    </body>
 </html>

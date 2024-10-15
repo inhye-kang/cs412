@@ -2,24 +2,17 @@
 
 {% block content %}
 <h2>All Profiles</h2>
-<table>
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Profile Image</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for profile in profiles %}
-        <tr>
-            <td>{{ profile.first_name }}</td>
-            <td>{{ profile.last_name }}</td>
-            <td>{{ profile.city }}</td>
-            <td><img src="{{ profile.profile_image_url }}" alt="{{ profile.first_name }}'s profile image" width="100"></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for p in profiles %}
+<article style="margin-bottom: 20px;"> 
+    {% if p.image_url %}
+    <a href="{% url 'profile' p.pk %}">
+        <img src="{{ p.image_url }}" alt="{{ p.first_name }} {{ p.last_name }}" style="width: 150px; height: 150px;">
+    </a>
+    {% endif %}
+    <div>
+        <h3 style="font-size: 18px;">{{ p.first_name }} {{ p.last_name }}, {{ p.city }}</h3>
+        {{ p.email }}
+    </div>
+</article>
+    {% endfor %}
 {% endblock content %}
