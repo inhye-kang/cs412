@@ -1,0 +1,29 @@
+{% extends 'mini_fb/base.html' %}
+<h1>{{ profile.first_name }} {{ profile.last_name }} </h1>
+
+{% block content %}
+
+    <div class="profile-container" style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 0 auto;">
+        {% if profile.image_url %}
+        <img src="{{ profile.image_url }}" alt="{{ profile.first_name }} {{ profile.last_name }}" style="width: 200px; height: 200px; border-radius: 10px;">
+        {% endif %}
+
+        <div>
+            <h2 style="font-size: 35px;">{{ profile.first_name }} {{ profile.last_name }}</h2>
+            <p style="font-size: 25px;">{{ profile.email }}</p>
+            <p style="font-size: 15px;">{{ profile.city }}</p>
+            <h3><a href="{% url 'create_status' profile.pk %}">Write status message</a></h3>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 10%;">
+        <h2>Status Messages:</h2>
+        {% for m in profile.get_status_messages %}
+        <div class="status-message" style="border: 1px solid #ddd; border-radius: 5px;">
+            <strong>At {{ m.ts }}</strong>
+            <p>{{ m.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

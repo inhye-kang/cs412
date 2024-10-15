@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini FB</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Mini FB</h1>
+        <nav>
+            <!-- Future navigation links go here -->
+        </nav>
+    </header>
+
+    <div class="content">
+        {% block content %}
+        <!-- Child templates will override this block -->
+        {% endblock content %}
+    </div>
+
+    <footer>
+        This page was generated at {{current_time}} by inhye@bu.edu.
+    </footer>
+</body>
+</html>

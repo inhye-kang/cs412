@@ -1,0 +1,11 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<h2>Add a comment</h2>
+<form>
+    {{form}}
+    <input type="submit" name="Create Comment">
+
+    {{% csrf_token %}}
+</form>
+{% endblock content %}

@@ -6,8 +6,8 @@ class Profile(models.Model):
     first_name = models.TextField(blank=False)
     last_name = models.TextField(blank=False)
     email = models.TextField(blank=False)
-    city = models.TextField(blank=False)
-    image_url = models.URLField(blank=True)
+    city = models.DateTimeField(auto_now=True)
+    image_url = models.URLField(blank=True) ## new
     
     def get_status_messages(self):
         '''Return status messages of Profile object.'''
