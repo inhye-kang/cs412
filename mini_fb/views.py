@@ -1,10 +1,10 @@
 ## mini_fb/views.py
 # description: the logic to handle URL requests
 #from django.shortcuts import render
-from .models import Profile
-from django.views.generic import ListView, DetailView, CreateView
+from .models import Profile, StatusMessage, Image
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
-from .forms import CreateProfileForm, CreateStatusMessageForm
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, UpdateStatusMessageForm
 import random
 from django.utils import timezone
 from typing import Any, Dict
@@ -59,8 +59,17 @@ class CreateStatusMessageView(CreateView):
     
     def form_valid(self, form):
         print(form.cleaned_data)
+        sm = form.save(commit=False)
         profile = Profile.objects.get(pk=self.kwargs['pk'])
-        form.instance.profile = profile
+        sm.profile = profile
+        sm.save()
+
+        files = self.request.FILES.getlist('files')
+
+        for file in files:
+            image = Image(status_message=sm, image_file=file)
+            image.save()
+
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -89,4 +98,52 @@ class ShowProfileView(DetailView):
         context = super().get_context_data(**kwargs)
         # Add 'current_time' to the context
         context['current_time'] = timezone.now()
+        return context
+    
+class UpdateProfileView(UpdateView):
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = 'mini_fb/update_profile_form.html'
+
+    def get_success_url(self):
+        return reverse('profile', kwargs={'pk': self.object.pk})
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the existing context
+        context = super().get_context_data(**kwargs)
+        # Add 'current_time' to the context
+        context['current_time'] = timezone.now()
+        return context
+    
+class DeleteStatusMessageView(DeleteView):
+    model = StatusMessage
+    template_name = 'mini_fb/delete_status_form.html'
+    context_object_name = 'status_message'
+
+    def get_success_url(self):
+        profile_id = self.object.profile.pk
+        return reverse('profile', kwargs={'pk': profile_id})
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the existing context
+        context = super().get_context_data(**kwargs)
+        # Add 'current_time' to the context
+        context['current_time'] = timezone.now()
+        return context
+    
+class UpdateStatusMessageView(UpdateView):
+    model = StatusMessage
+    form_class = UpdateStatusMessageForm
+    template_name = 'mini_fb/update_status_form.html'
+
+    def get_success_url(self):
+        profile_id = self.object.profile.pk
+        return reverse('profile', kwargs={'pk': profile_id})
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the existing context
+        context = super().get_context_data(**kwargs)
+        # Add 'current_time' to the context
+        context['current_time'] = timezone.now()
+        context['status_message'] = self.object
         return context

@@ -12,18 +12,51 @@
             <h2 style="font-size: 35px;">{{ profile.first_name }} {{ profile.last_name }}</h2>
             <p style="font-size: 25px;">{{ profile.email }}</p>
             <p style="font-size: 15px;">{{ profile.city }}</p>
-            <h3><a href="{% url 'create_status' profile.pk %}">Write status message</a></h3>
+            <a href="{% url 'update_profile' profile.pk %}" class="btn">Update Profile</a>
+
+            <h3><a href="{% url 'create_status' profile.pk %}" class="btn">Write status message</a></h3>
         </div>
     </div>
 
     <div style="margin-bottom: 10%;">
         <h2>Status Messages:</h2>
         {% for m in profile.get_status_messages %}
-        <div class="status-message" style="border: 1px solid #ddd; border-radius: 5px;">
+        <div class="status-message" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; padding: 10px;">
             <strong>At {{ m.ts }}</strong>
+            <a href="{% url 'update_status' m.pk %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'delete_status' m.pk %}" class="btn btn-danger">Delete</a>
+
             <p>{{ m.message }}</p>
+    
+            <!-- Display images associated with the status message -->
+            {% for img in m.get_images %}
+            <div class="status-image" style="margin-top: 10px;">
+                <img src="{{ img.image_file.url }}" alt="Status image" style="width: 200px; height: 200px; border-radius: 5px;">
+            </div>
+            {% endfor %}
         </div>
         {% endfor %}
     </div>
+
+    <style>
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgba(220, 204, 194, 0.953);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Primary button for Update */
+        .btn-primary {
+            background-color: rgba(219, 206, 198, 0.953);
+        }
+
+    </style>
 
 {% endblock %}
