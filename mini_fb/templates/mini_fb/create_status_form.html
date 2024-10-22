@@ -1,22 +1,31 @@
 {% extends 'mini_fb/base.html' %}
 {% block content %}
     <h2>Write new status message</h2>
-
-    <form method='POST'>
-        <table class="form-table">
-            {{ form.as_table }}
-            <tr>
-                <td></td>
-                <td>
-                    <input type='submit' name='Write status message' value='Write status message'>
-                    {% csrf_token %}
-                </td>
-            </tr>
-        </table>
-    </form>
-
-    <form action="{% url 'show_all' %}">
-        <input type='submit' name='Cancel' value='Cancel'>
-    </form>
+    <div style="margin-bottom: 10%;">
+        <form method='POST' enctype="multipart/form-data">
+            <table class="form-table">
+                {{ form.as_table }}
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="file" name="files" multiple style="border: 2px solid rgba(240, 112, 38, 0.953); padding: 8px; border-radius: 5px; font-size: 16px; color: rgba(240, 112, 38, 0.953); transition: border-color 0.3s ease;">
+                        <br><br>
+                        <input type='submit' name='Write status message' value='Write status message' 
+                               style="font-size: 18px; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold; background-color: rgba(240, 112, 38, 0.953); color: white; transition: background-color 0.3s ease;"
+                               onmouseover="this.style.backgroundColor='rgba(220, 90, 20, 0.9)'" 
+                               onmouseout="this.style.backgroundColor='rgba(240, 112, 38, 0.953)'">
+                        {% csrf_token %}
+                    </td>
+                </tr>
+            </table>
+        </form>
+    
+        <form action="{% url 'show_all_profiles' %}">
+            <input type='submit' name='Cancel' value='Cancel' 
+                   style="font-size: 18px; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold; background-color: #f1eded; color: rgba(240, 112, 38, 0.953); transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#aaa'" 
+                   onmouseout="this.style.backgroundColor='#ccc'">
+        </form>
+    </div>
 
 {% endblock %}

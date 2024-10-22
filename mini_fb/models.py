@@ -1,4 +1,4 @@
-# blog/models.py
+# mini_fb/models.py
 from django.db import models
 class Profile(models.Model):
     '''Encapsulate the idea of a a profile of some user.'''
@@ -24,3 +24,16 @@ class StatusMessage(models.Model):
     def __str__(self):
         '''Return a string representation of this status object.'''
         return f'{self.message}'
+    
+    def get_images(self):
+        '''Return all images associated with this StatusMessage.'''
+        return Image.objects.filter(status_message=self)
+
+    
+class Image(models.Model):
+    status_message = models.ForeignKey("StatusMessage", on_delete=models.CASCADE, related_name="images")
+    image_file = models.ImageField(upload_to='status_images/')
+    upload_ts = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Image for status: {self.status_message.message} uploaded at {self.upload_ts}'

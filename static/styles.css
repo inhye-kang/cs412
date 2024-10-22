@@ -23,6 +23,29 @@ img {
     border-radius: 50%;
 }
 
+.button {
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.primary-btn {
+    background-color: rgba(240, 112, 38, 0.953);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn {
+    background-color: #ccc;
+    color: black;
+    transition: background-color 0.3s ease;
+}
+
+
 nav {
     padding-top: 5px;
     align-items: top;
