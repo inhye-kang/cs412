@@ -1,5 +1,6 @@
 # mini_fb/models.py
 from django.db import models
+
 class Profile(models.Model):
     '''Encapsulate the idea of a a profile of some user.'''
     # data attributes of a profile:
