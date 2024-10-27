@@ -2,17 +2,20 @@
 
 {% block content %}
 <h2>All Profiles</h2>
-{% for p in profiles %}
-<article style="margin-bottom: 20px;"> 
-    {% if p.image_url %}
-    <a href="{% url 'profile' p.pk %}">
-        <img src="{{ p.image_url }}" alt="{{ p.first_name }} {{ p.last_name }}" style="width: 150px; height: 150px;">
-    </a>
-    {% endif %}
-    <div>
-        <h3 style="font-size: 18px;">{{ p.first_name }} {{ p.last_name }}, {{ p.city }}</h3>
-        {{ p.email }}
+<div class="profile-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; padding-bottom: 10%;">
+    {% for p in profiles %}
+    <div class="profile-card" style="border: 2px solid #3b5998; border-radius: 10px; padding: 15px; text-align: center; width: 180px; background-color: white;">
+        {% if p.image_url %}
+        <a href="{% url 'profile' p.pk %}">
+            <img src="{{ p.image_url }}" alt="{{ p.first_name }} {{ p.last_name }}" style="width: 100%; height: 200px; border-radius: 5px; max-height: 200px; object-fit: cover;">
+        </a>
+        {% endif %}
+        <div class="profile-info" style="margin-top: auto; margin-bottom: 20; text-align: bottom;">
+            <h3 style="font-size: 16px; margin: 5px 0; color: #3b5998;">{{ p.first_name }} {{ p.last_name }}</h3>
+            <p style="font-size: 14px; color: #555; margin: 2px 0;">{{ p.city }}</p>
+            <p style="font-size: 12px; color: #777; margin: 2px 0;">{{ p.email }}</p>
+        </div>
     </div>
-</article>
     {% endfor %}
-{% endblock content %}
+</div>
+{% endblock %}
