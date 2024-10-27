@@ -1,0 +1,26 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<h2>People {{ profile.first_name }} {{ profile.last_name }} may know:</h2>
+<div class="suggestions-grid" style="display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+    {% for suggestion in friend_suggestions %}
+    <div class="profile-card" style="border: 2px solid #3b5998; border-radius: 10px; padding: 15px; text-align: center; width: 180px; background-color: white;">
+        {% if suggestion.image_url %}
+        <a href="{% url 'profile' suggestion.pk %}">
+            <img src="{{ suggestion.image_url }}" alt="{{ suggestion.first_name }} {{ suggestion.last_name }}" style="width: 100%; height: 180px; border-radius: 5px; object-fit: cover;">
+        </a>
+        {% endif %}
+        <div class="profile-info" style="margin-top: 10px;">
+            <h3 style="font-size: 16px; margin: 5px 0; color: #3b5998;">{{ suggestion.first_name }} {{ suggestion.last_name }}</h3>
+            <a href="{% url 'add_friend' profile.pk suggestion.pk %}" class="btn" style="font-size: 14px;">Add Friend</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% if not friend_suggestions %}
+    <p style="font-size: 16px; color: #777;">No friend suggestions available.</p>
+    {% endif %}
+</div>
+<div style="margin-top: 20px;">
+    <a href="{% url 'profile' profile.pk %}" class="btn">Back to Profile</a>
+</div>
+{% endblock %}

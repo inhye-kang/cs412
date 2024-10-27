@@ -4,6 +4,7 @@
 from .models import Profile, StatusMessage, Image
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
+from django.shortcuts import redirect
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, UpdateStatusMessageForm
 import random
 from django.utils import timezone
@@ -146,4 +147,44 @@ class UpdateStatusMessageView(UpdateView):
         # Add 'current_time' to the context
         context['current_time'] = timezone.now()
         context['status_message'] = self.object
+        return context
+    
+class CreateFriendView(CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        other_pk = self.kwargs['other_pk']
+        
+        try:
+            profile = Profile.objects.get(pk=pk)
+            other_profile = Profile.objects.get(pk=other_pk)
+            
+            if profile != other_profile:
+                profile.add_friend(other_profile)
+
+        except Profile.DoesNotExist:
+            pass
+        
+        return redirect('profile', pk=pk)
+
+class ShowFriendSuggestionsView(DetailView):
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['friend_suggestions'] = self.object.get_friend_suggestions()
+        context['current_time'] = timezone.now()
+
+        return context
+    
+class ShowNewsFeedView(DetailView):
+    model = Profile
+    template_name = 'mini_fb/news_feed.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['news_feed'] = self.object.get_news_feed()
+        context['current_time'] = timezone.now()
         return context
