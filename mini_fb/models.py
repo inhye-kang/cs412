@@ -1,9 +1,12 @@
 # mini_fb/models.py
 from django.db import models
+from django.contrib.auth.models import User
+
 from django.db.models import Q
 
 class Profile(models.Model):
     '''Encapsulate the idea of a a profile of some user.'''
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     # data attributes of a profile:
     first_name = models.TextField(blank=False)
     last_name = models.TextField(blank=False)
@@ -85,8 +88,8 @@ class Image(models.Model):
         return f'Image for status: {self.status_message.message} uploaded at {self.upload_ts}'
     
 class Friend(models.Model):
-    profile1 = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name = 'profile1')
-    profile2 = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name = 'profile2')
+    profile1 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name = 'profile1')
+    profile2 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name = 'profile2')
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
