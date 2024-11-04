@@ -4,18 +4,51 @@
         <title>Mini Facebook</title>
         <link rel="stylesheet" href="{% static 'styles.css' %}">
         <style>
-          
-          body {
+            body {
                 padding-top: 10px;
             }
             .form-table {
                 margin: 0 auto; 
             }
-
             .form-table textarea, .form-table input[type="url"] {
                 width: 300px; 
                 height: 30px; 
                 resize: none; 
+            }
+            nav {
+                background-color: #f8f9fa;
+                padding: 10px;
+                border-bottom: 2px solid #ddd;
+            }
+            nav ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: space-between;
+            }
+            nav li {
+                display: inline;
+                margin-right: 20px;
+            }
+            nav a, nav button {
+                text-decoration: none;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            nav a:hover, nav button:hover {
+                background-color: #ddd;
+            }
+            .btn {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
             }
         </style>
     </head>
@@ -23,15 +56,33 @@
         <header><h1>Mini Facebook</h1></header>
         <nav>
             <ul>
-                <a href="{% url 'show_all_profiles' %}">Home</a>
-                <a href="{% url 'create_profile' %}">Create Profile</a>
+                <li><a href="{% url 'show_all_profiles' %}">Home</a></li>
+
+                {% if request.user.is_authenticated %}
+                    {% if request.user.profile_set.exists %}
+                        {% with request.user.profile_set.first as user_profile %}
+                            <li><a href="{% url 'profile' user_profile.id %}">My Profile</a></li>
+                        {% endwith %}
+                        <li>
+                            <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><p>No profile found. Please create one.</p></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div>
         {% block content %}
         <!-- put interesting/specific stuff here -->
         {% endblock %}
-        This page was generated at {{current_time}} by inhye@bu.edu.
+        This page was generated at {{ current_time }} by inhye@bu.edu.
         </div>    
     </body>
 </html>
