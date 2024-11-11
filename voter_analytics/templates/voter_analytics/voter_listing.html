@@ -1,0 +1,206 @@
+{% extends "voter_analytics/base.html" %}
+{% load static %}
+
+{% block content %}
+  <style>
+    /* Page styling */
+    body {
+      background-image: linear-gradient(to bottom right, rgb(193, 228, 250), rgb(246, 246, 208));
+      font-family: Helvetica, sans-serif;
+      margin: 0;
+      color: rgba(240, 112, 38, 0.953);
+      font-size: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(240, 112, 38, 0.953);
+    }
+
+    /* Form styling */
+    form {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+
+    label, select, button {
+      font-size: 16px;
+      color: rgba(240, 112, 38, 0.953);
+    }
+
+    button {
+      background-color: rgba(240, 112, 38, 0.953);
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: rgba(220, 100, 30, 0.953);
+    }
+
+    /* Table styling */
+    .voter-table {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .voter-table thead {
+      background-color: rgba(240, 112, 38, 0.953);
+      color: white;
+    }
+
+    .voter-table th, .voter-table td {
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 18px;
+      color: black;
+    }
+
+    .voter-table th {
+      font-weight: bold;
+    }
+
+    .voter-table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .voter-table tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .voter-table td {
+      border-bottom: 1px solid #ddd;
+    }
+
+    .view-link {
+      color: rgba(240, 112, 38, 0.953);
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .view-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Pagination styling */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .pagination a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: rgba(240, 112, 38, 0.953);
+      font-weight: bold;
+    }
+
+    .pagination a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <h1>Voter List</h1>
+
+  <!-- Filter Form -->
+  <form method="get">
+    <label>Party Affiliation:</label>
+    <select name="party_affiliation">
+      <option value="">All</option>
+      <option value="D">Democrat</option>
+      <option value="R">Republican</option>
+      <option value="U">Unaffiliated</option>
+    </select>
+
+    <label>Min Date of Birth:</label>
+    <select name="min_year">
+      <option value="">Any</option>
+      {% for year in years_range %}
+        <option value="{{ year }}">{{ year }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Max Date of Birth:</label>
+    <select name="max_year">
+      <option value="">Any</option>
+      {% for year in years_range %}
+        <option value="{{ year }}">{{ year }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Voter Score:</label>
+    <select name="voter_score">
+      <option value="">Any</option>
+      {% for score in voter_score_range %}
+          <option value="{{ score }}">{{ score }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Participated in Elections:</label>
+    {% for election in election_fields %}
+      <input type="checkbox" name="{{ election }}"> {{ election }}
+    {% endfor %}
+
+    <button type="submit">Filter</button>
+  </form>
+
+  <!-- Voter Table -->
+  <table class="voter-table">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Address</th>
+        <th>Date of Birth</th>
+        <th>Party Affiliation</th>
+        <th>Voter Score</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for voter in voters %}
+        <tr>
+          <td>{{ voter.first_name }}</td>
+          <td>{{ voter.last_name }}</td>
+          <td>{{ voter.street_num }} {{ voter.street_name }}</td>
+          <td>{{ voter.date_of_birth }}</td>
+          <td>{{ voter.party }}</td> 
+          <td>{{ voter.voter_score }}</td>
+          <td><a href="{% url 'voter' voter.pk %}" class="view-link">View Details</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+  </div>
+{% endblock %}

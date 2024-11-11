@@ -1,0 +1,69 @@
+{% load static %}
+<html>
+    <head>
+        <title>Voter Analytics</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <style>
+            body {
+                padding-top: 10px;
+            }
+            .form-table {
+                margin: 0 auto; 
+            }
+            .form-table textarea, .form-table input[type="url"] {
+                width: 300px; 
+                height: 30px; 
+                resize: none; 
+            }
+            nav {
+                background-color: #f8f9fa;
+                padding: 10px;
+                border-bottom: 2px solid #ddd;
+            }
+            nav ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+            }
+            nav li {
+                display: inline;
+                margin-right: 20px;
+                padding: 5px 10px;
+            }
+            nav a, nav button {
+                text-decoration: none;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            nav a:hover, nav button:hover {
+                background-color: #ddd;
+            }
+            .btn {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <header><h1>Voter Analytics</h1></header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'voters' %}">Home</a></li>
+                <li><a href="{% url 'graphs' %}">Graphs</a></li>
+            </ul>
+        </nav>
+        <div>
+        {% block content %}
+        <!-- put interesting/specific stuff here -->
+        {% endblock %}
+        </div>    
+    </body>
+</html>
