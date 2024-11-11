@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView, TemplateView
 from .models import Voter
 from django.db.models import Count
-from plotly.offline import plot
+import plotly
 import plotly.graph_objs as go
 import pandas as pd
 
