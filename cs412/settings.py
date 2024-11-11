@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'quotes',
     'restaurant', #new app
     'mini_fb', #new app
+    'voter_analytics', #new app
 ]
 
 MIDDLEWARE = [

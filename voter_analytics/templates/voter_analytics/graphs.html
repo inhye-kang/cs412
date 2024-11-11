@@ -1,0 +1,62 @@
+{% extends "voter_analytics/base.html" %}
+
+{% block content %}
+  <h1>Voter Data Graphs</h1>
+
+  <form method="get">
+    <label>Party Affiliation:</label>
+    <select name="party_affiliation">
+      <option value="">All</option>
+      <option value="D">Democrat</option>
+      <option value="R">Republican</option>
+      <option value="U">Unaffiliated</option>
+    </select>
+
+    <label>Min Date of Birth:</label>
+    <select name="min_year">
+      <option value="">Any</option>
+      {% for year in years_range %}
+        <option value="{{ year }}">{{ year }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Max Date of Birth:</label>
+    <select name="max_year">
+      <option value="">Any</option>
+      {% for year in years_range %}
+        <option value="{{ year }}">{{ year }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Voter Score:</label>
+    <select name="voter_score">
+      <option value="">Any</option>
+      {% for score in voter_score_range %}
+          <option value="{{ score }}">{{ score }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Participated in Elections:</label>
+    {% for election in election_fields %}
+      <input type="checkbox" name="{{ election }}"> {{ election }}
+    {% endfor %}
+
+    <button type="submit">Filter</button>
+  </form>
+
+  <div>
+    <h2>Voter Distribution by Year of Birth</h2>
+    {{ year_div|safe }}
+  </div>
+
+  <div>
+    <h2>Voter Distribution by Party Affiliation</h2>
+    {{ party_div|safe }}
+  </div>
+
+  <div>
+    <h2>Voter Participation by Election</h2>
+    {{ election_div|safe }}
+  </div>
+
+{% endblock %}

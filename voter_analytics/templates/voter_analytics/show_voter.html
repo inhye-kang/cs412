@@ -1,0 +1,87 @@
+{% extends "voter_analytics/base.html" %}
+
+{% block content %}
+  <style>
+    /* Overall page styling */
+    body {
+      background-image: linear-gradient(to bottom right, rgb(193, 228, 250), rgb(246, 246, 208));
+      font-family: Helvetica, sans-serif;
+      margin: 0;
+      color: rgba(240, 112, 38, 0.953);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(240, 112, 38, 0.953);
+    }
+
+    /* Information card styling */
+    .info-card {
+      width: 80%;
+      max-width: 800px;
+      background-color: white;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      color: black;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .info-card p {
+      margin: 10px 0;
+      font-size: 15px;
+    }
+
+    .info-card p strong {
+      color: rgba(240, 112, 38, 0.953);
+    }
+
+    /* Election participation styling */
+    .election-section {
+      margin-top: 20px;
+    }
+
+    /* Google Maps and Back link styling */
+    .maps-link, .back-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: rgba(240, 112, 38, 0.953);
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .maps-link:hover, .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      margin-left: 15px;
+    }
+  </style>
+
+  <h1>Voter Information</h1>
+
+  <div class="info-card">
+    <p><strong>Full Name:</strong> {{ voter.first_name }} {{ voter.last_name }}</p>
+    <p><strong>Address:</strong> {{ voter.street_num }} {{ voter.street_name }}, {{ voter.zip_code }}</p>
+    <p><strong>Date of Birth:</strong> {{ voter.date_of_birth }}</p>
+    <p><strong>Party Affiliation:</strong> {{ voter.party }}</p>
+    <p><strong>Precinct Number:</strong> {{ voter.precinct_num }}</p>
+    <p><strong>Voter Score:</strong> {{ voter.voter_score }}</p>
+
+    <div class="election-section">
+      <h2>Election Participation</h2>
+      <p><strong>2020 State:</strong> {{ voter.v20state|yesno:"Yes,No" }}</p>
+      <p><strong>2021 Town:</strong> {{ voter.v21town|yesno:"Yes,No" }}</p>
+      <p><strong>2021 Primary:</strong> {{ voter.v21primary|yesno:"Yes,No" }}</p>
+      <p><strong>2022 General:</strong> {{ voter.v22general|yesno:"Yes,No" }}</p>
+      <p><strong>2023 Town:</strong> {{ voter.v23town|yesno:"Yes,No" }}</p>
+    </div>
+
+    <a href="https://www.google.com/maps/search/?api=1&query={{ voter.street_num }}+{{ voter.street_name }},+{{ voter.zip_code }}" target="_blank" class="maps-link">View on Google Maps</a>
+    <a href="{% url 'voters' %}" class="back-link">Back to Voter List</a>
+  </div>
+{% endblock %}
