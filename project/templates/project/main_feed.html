@@ -1,0 +1,242 @@
+{% extends "project/base.html" %}
+{% load static %}
+{% block body_id %}main-feed{% endblock body_id %}
+{% block body_class %}main-feed-body{% endblock body_class %}
+{% block content %}
+
+<!-- Background Wine Cup Effect https://codepen.io/patrickhempel/pen/vwwPzQ-->
+<div class="cup">
+    <div class="wave"></div>
+</div>
+
+<!-- Content Wrapper for Wine Reviews and Map -->
+<div class="content-wrapper">
+    <div class="container d-flex">
+        <!-- Review Feed -->
+        <div class="review-feed-container w-50 me-4">
+            <div class="review-feed" id="review-feed" style="max-height: 80vh; overflow-y: auto;">
+                <!-- Loop Through Reviews -->
+                {% for review in reviews %}
+                    <div class="review-card mb-4 p-4 border rounded shadow-sm bg-white position-relative">
+                        <!-- Review Header with Profile Info -->
+                        <div class="d-flex justify-content-between align-items-start mb-1 review-header">
+                            <!-- Profile Picture -->
+                            <div class="d-flex align-items-center justify-content-center gap-2 review-header">
+                                <img src="{{ review.user.userprofile.image_url|default:'https://via.placeholder.com/60' }}" 
+                                    alt="{{ review.user.username }}" 
+                                    class="rounded-circle me-3 profile-picture"
+                                    width="140" height="140">
+                                <!-- Review Details -->
+                                <div class="review-details text-container">
+                                    <h5 class="mb-0">
+                                        <a href="{% url 'profile' review.user.userprofile.pk %}" class="fw-bold text-decoration-none">
+                                            {{ review.user.username }}
+                                        </a>
+                                    </h5>
+                                    <h6 class="text-muted">ranked {{ review.wine.name }}!</h6>
+                                    <!-- Review Creation Date -->
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-calendar-alt me-1"></i>{{ review.created_at|date:"M d, Y" }}
+                                    </p>
+                                    <!-- Display Restaurant Location if Available -->
+                                    {% if review.location %}
+                                        <p class="text-muted mb-0"> Tried at
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ review.location }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Rating Circle https://codepen.io/leandroamato/pen/jOWqrGe -->
+                            <svg
+                                viewBox="0 0 200 200"
+                                width="140"
+                                height="140"
+                                preserveAspectRatio="xMidYMid meet"
+                                stroke-width="12"
+                                class="chart-container"
+                            >
+                                <!-- Background Circle -->
+                                <circle cx="100" cy="100" r="55" class="back" fill="none" stroke="#ddd" />
+
+                                <!-- Rating Color -->
+                                <circle
+                                    cx="100"
+                                    cy="100"
+                                    r="55"
+                                    class="front"
+                                    fill="none"
+                                    
+                                    style="
+                                        transform-origin: 50% 50%;
+                                        transform: rotate(-90deg);
+                                        stroke-dasharray: 345.58;
+                                        stroke-dashoffset: {{ review.stroke_dashoffset }};
+                                        stroke: {% if review.rating >= 7 %} #27ae60 
+                                            {% elif review.rating >= 4 %} #f1c40f 
+                                            {% else %} #e74c3c 
+                                            {% endif %};
+                                    "
+                                />
+                                <!-- Score Number -->
+                                <text
+                                    x="100"
+                                    y="105"
+                                    font-size="30"
+                                    font-family="Arial, sans-serif"
+                                    font-weight="bold"
+                                    text-anchor="middle"
+                                    alignment-baseline="middle"
+                                    fill="{% if review.rating >= 7 %} #27ae60 
+                                        {% elif review.rating >= 4 %} #f1c40f 
+                                        {% else %} #e74c3c 
+                                        {% endif %}"
+                                >
+                                {{ review.rating|default:"0" }}
+                                </text>
+                            </svg>
+                        </div>
+                    <!-- Review Details -->
+                    <p class="text-muted">Varietal: {{ review.varietal|default:"Not specified" }}</p>
+                    <p class="text-muted">Country: {{ review.country_of_origin|default:"Not specified" }}</p>
+                    <!-- Favorite Toggle Form -->
+                    {% if review.user != request.user %}
+                    <form method="post" action="{% url 'favorite_toggle' review.wine.id %}" class="favorite-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="{% if review.wine.id in favorites %}unfavorite{% else %}favorite{% endif %}">
+                        <button type="submit" class="favorite-btn" style="background: #3f0c16e2; border: 1px solid #ddd; color: #fafbec; font-size: 14px; font-weight: bold; padding: 5px 12px; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; justify-content: center;">
+                            <i class="fas fa-bookmark"></i>
+                            {% if review.wine.id in favorites %}
+                                Unfavorite
+                            {% else %}
+                                Favorite
+                            {% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    <!-- Review Text and Image -->
+                    <div class="review-content">
+                        {% if review.image_url %}
+                        <div
+                            class="review-image-wrapper"
+                            style="display: flex; justify-content: center; align-items: center; width: 100%; height: 200px; overflow: hidden; border-radius: 10px;"
+                        >
+                            <img
+                                src="{{ review.image_url }}"
+                                alt="{{ review.wine.name }}"
+                                class="review-image"
+                                style="height: 100%; width: auto; object-fit: cover; display: block;"
+                            />
+                        </div>
+                        {% endif %}
+                        <p class="mt-3">{{ review.review_text }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">No reviews found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div id="map" class="w-50" style="height: 80vh; border: 1px solid #ddd; border-radius: 10px;"></div>
+        {{ reviews_with_location|json_script:"reviews-data" }}
+    </div>
+</div>
+
+<!-- Background Wave Effect -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const reviewFeed = document.querySelector(".review-feed");
+        const wave = document.querySelector(".cup .wave");
+
+        if (!reviewFeed || !wave) {
+            console.error("Missing review-feed or wave element");
+            return;
+        }
+
+        reviewFeed.addEventListener("scroll", function () {
+            const maxScroll = reviewFeed.scrollHeight - reviewFeed.clientHeight;
+            const scrollPosition = reviewFeed.scrollTop;
+
+            const scrollPercentage = scrollPosition / maxScroll;
+            const waveTop = 150 - scrollPercentage * 100;
+            wave.style.top = `${waveTop}%`;
+        });
+    });
+</script>
+
+{% endblock %}
+
+<style>
+    .review-card {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .review-header {
+        margin-bottom: 0px important!;
+    }
+
+    .review-content p {
+        margin: 5px 0;
+    }
+
+    .review-image-wrapper {
+        height: 180px;
+    }
+
+    .review-card p.text-muted:first-of-type {
+        margin-top: 2px;
+    }
+
+    .review-card p.text-muted {
+        margin-bottom: 0px;
+    }
+
+    .review-details {
+        margin-left: 5px;
+        gap: 0px;
+        padding: 0;
+    }
+
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+        margin-right: 10px;
+        margin-bottom: 0 important!;
+        padding-bottom: 0 important!;
+    }
+
+    .chart-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .chart-container .back {
+        stroke: #ddd;
+        stroke-width: 14;
+        fill: none;
+    }
+
+    .chart-container .front {
+        stroke-width: 14;
+        stroke-linecap: round;
+        fill: none;
+        stroke: #27ae60;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 0.3s ease;
+    }
+
+    .chart-container text {
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 20px;
+        fill: #333;
+        text-anchor: middle;
+    }
+
+    h5, h6, p {
+        line-height: 1.2;
+    }
+</style>

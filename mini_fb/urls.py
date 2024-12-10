@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views ## NEW
 
 urlpatterns = [
     path('', ShowAllView.as_view(), name='show_all_profiles'), 
-    path('profile/<int:pk>', ShowProfileView.as_view(), name='profile'),
+    path('profile/<int:pk>', ShowProfileView.as_view(), name='profiles'),
     path('create_profile/', CreateProfileView.as_view(), name='create_profile'),
     path('status/create_status/', CreateStatusMessageView.as_view(), name='create_status'),
     path('profile/update', UpdateProfileView.as_view(), name='update_profile'),

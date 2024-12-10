@@ -1,0 +1,18 @@
+{% extends "project/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Delete Review</h2>
+    <p class="text-center">
+        Are you sure you want to delete your review of 
+        <strong>{{ review.wine.name }}</strong>?
+    </p>
+    <div class="text-center mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'profile' profile.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

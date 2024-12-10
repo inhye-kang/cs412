@@ -1,0 +1,15 @@
+<!-- templates/project/display_all_profiles.html -->
+{% extends "project/base.html" %}
+
+{% block content %}
+    <h2>All Profiles</h2>
+    <div class="list-group">
+        {% for profile in profiles %}
+            <a href="#" class="list-group-item list-group-item-action">
+                {{ profile.first_name }} {{ profile.last_name }} - {{ profile.city }}
+            </a>
+        {% empty %}
+            <p>No profiles available.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

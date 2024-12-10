@@ -1,0 +1,92 @@
+{% extends 'project/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Login Page -->
+<div id="login-container" class="d-flex justify-content-center align-items-center min-vh-100 position-relative">
+    <!-- Star Wars Background -->
+    <!-- https://css-tricks.com/snippets/css/star-wars-crawl-text/ Implementation-->
+    <section class="star-wars position-absolute" style="max-width: 1200px; width: 100%;">
+        <div class="crawl">
+            <div class="title text-center">
+                <h1>I PLEDGE THAT</h1>
+            </div>
+            <p>By using this app, I pledge to be a responsible wine drinker and uphold the principles of integrity, respect, and thoughtful judgment.</p>     
+            <p>By using this app, I pledge to be a responsible wine drinker and uphold the principles of integrity, respect, and thoughtful judgment.</p>     
+            <p>By using this app, I pledge to be a responsible wine drinker and uphold the principles of integrity, respect, and thoughtful judgment.</p>     
+        </div>
+    </section>
+
+    <!-- Login Card -->
+    <div id="login-card" class="card p-4 shadow-lg position-relative" style="max-width: 400px; width: 100%; border-radius: 10px; z-index: 1;">
+        <h2 class="text-center mb-4">Login</h2>
+        <!-- Login Form -->
+        <form method="post" action="{% url 'login' %}" id="login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{% url 'home' %}">
+            <button type="submit" id="login-button" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'app.js' %}" defer></script>
+
+<style>
+    #login-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    #login-card {
+        background: white;
+        z-index: 1; 
+        position: relative; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .star-wars {
+        display: flex;
+        justify-content: center;
+        height: 800px;
+        perspective: 400px;
+        color: black;
+        font-size: 400%;
+        font-weight: 600;
+        font-family: 'Pathway Gothic One', sans-serif;
+        line-height: 150%;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .crawl {
+        position: relative;
+        width: 80%;
+        max-width: 1200px;
+        animation: crawl 30s linear infinite;
+        transform-origin: 50% 100%;
+    }
+
+    .title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+
+    }
+
+    /* Star Wars Crawl Animation */
+    @keyframes crawl {
+        0% {
+            top: 100%;
+            transform: rotateX(20deg) translateZ(0);
+        }
+        100% { 
+            top: -4000px;
+            transform: rotateX(25deg) translateZ(-2000px);
+        }
+    }
+
+</style>
+{% endblock %}

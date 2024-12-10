@@ -1,0 +1,14 @@
+{% extends 'project/base.html' %}
+{% block content %}
+<h2>Update Profile</h2>
+
+<form method="POST">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+</form>
+
+<form action="{% url 'profile' profile.pk %}">
+    <button type="submit" class="btn btn-secondary mt-3">Cancel</button>
+</form>
+{% endblock %}

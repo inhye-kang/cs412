@@ -1,0 +1,257 @@
+{% extends "project/base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Write a Wine Review</h2>
+<!-- Wine Review Form -->
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- Wine Information -->
+    <h4 class="mt-4">Wine Information</h4>
+    <div class="form-group mb-3">
+        <label for="wine_name">Wine Name</label>
+        <input type="text" id="wine_name" name="wine_name" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="varietal">Varietal</label>
+        <input type="text" id="varietal" name="varietal" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="image_url">Image URL (Optional)</label>
+        <input type="url" id="image_url" name="image_url" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="review_text">Review Text</label>
+        <textarea id="review_text" name="review_text" class="form-control" required></textarea>
+    </div>
+
+    <!-- Country Selection Dropdown -->
+    <div class="form-group mb-3">
+        <label for="country_of_origin">Country of Origin</label>
+        <select id="country_of_origin" name="country_of_origin" class="form-select">
+            <option value="">Select a country</option>
+            {% for code, name in countries %}
+            <option value="{{ code }}" {% if form.instance.country_of_origin == code %}selected{% endif %}>
+                {{ name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Restaurant Search Section -->
+    <div class="form-group">
+        <label for="restaurant-search">Restaurant</label>
+        <input
+            type="text"
+            id="restaurant-search"
+            class="form-control"
+            placeholder="Search for a restaurant..."
+            autocomplete="off"
+        />
+        <div id="restaurant-suggestions" class="dropdown-menu" style="display: none;"></div>
+        
+    </div>
+    
+    <!-- Hidden Fields for Latitude and Longitude as they get extracted from the maps API-->
+    <input type="hidden" id="restaurant_name" name="restaurant_name" />
+    <input type="hidden" id="latitude" name="latitude" />
+    <input type="hidden" id="longitude" name="longitude" />
+
+    <!-- Wine Ratings Section -->
+    <h4 class="mt-4">Wine Ratings</h4>
+
+    <div class="form-group mb-3">
+        <label for="overall_rating">Overall Rating</label>
+        <input type="range" id="overall_rating" name="rating" class="form-range" min="0" max="10" value="5">
+        <span id="overall_rating_value" class="fw-bold">5</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="body_rating">Body Rating</label>
+        <input type="range" id="body_rating" name="body_rating" class="form-range" min="0" max="10" value="5">
+        <span id="body_rating_value" class="fw-bold">5</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="finish_rating">Finish Rating</label>
+        <input type="range" id="finish_rating" name="finish_rating" class="form-range" min="0" max="10" value="5">
+        <span id="finish_rating_value" class="fw-bold">5</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="taste_rating">Taste Rating</label>
+        <input type="range" id="taste_rating" name="taste_rating" class="form-range" min="0" max="10" value="5">
+        <span id="taste_rating_value" class="fw-bold">5</span>
+    </div>
+
+    <!-- Submit and Cancel Buttons -->
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+<form action="{% url 'home' %}">
+    <input type="submit" value="Cancel" class="btn btn-secondary mt-3">
+</form>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script>
+    /**
+     * Updates the displayed value of the rating sliders
+     */
+    const updateSliderValue = (inputId, displayId) => {
+        const input = document.getElementById(inputId);
+        const display = document.getElementById(displayId);
+
+        input.addEventListener('input', () => {
+            display.textContent = input.value;
+        });
+
+        display.textContent = input.value;
+    };
+
+    // Initialize sliders and their displays
+    updateSliderValue('overall_rating', 'overall_rating_value');
+    updateSliderValue('body_rating', 'body_rating_value');
+    updateSliderValue('finish_rating', 'finish_rating_value');
+    updateSliderValue('taste_rating', 'taste_rating_value');
+
+    /**
+     * Handles restaurant autocomplete search with Google Places API
+     */
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("restaurant-search");
+    const suggestionsBox = document.getElementById("restaurant-suggestions");
+    const latitudeField = document.getElementById("latitude");
+    const longitudeField = document.getElementById("longitude");
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value;
+
+        if (query.length < 3) {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        fetch(`/project/google-places-autocomplete?input=${query}`,{  
+                            headers: {  
+                                Accept: "application/json"  
+                            }  
+                            })
+            .then((response) => response.json())
+            .then((data) => {
+                suggestionsBox.innerHTML = "";
+                suggestionsBox.style.display = "block";
+
+                if (data.predictions && data.predictions.length > 0) {
+                    data.predictions.forEach((place) => {
+                        const option = document.createElement("div");
+                        option.className = "dropdown-item";
+                        option.textContent = place.description;
+                        option.dataset.placeId = place.place_id;
+
+                        // Handle click event
+                        option.addEventListener("click", () => {
+                            searchInput.value = place.description;
+                            suggestionsBox.style.display = "none";
+
+                            // Set restaurant_name field for form submission
+                            document.getElementById("restaurant_name").value = place.description;
+
+                            // Fetch details from Django API
+                            fetch(`/project/google-places-details?place_id=${place.place_id}`, {
+                                headers: {
+                                    Accept: "application/json"
+                                }
+                            })
+                            .then((response) => response.json())
+                            .then((details) => {
+                                console.log("Place Details Response:", details);
+
+                                // Ensure correct keys exist in the API response
+                                if (details && "lat" in details && "lng" in details) {
+                                    document.getElementById("latitude").value = details.lat;
+                                    document.getElementById("longitude").value = details.lng;
+                                    console.log("Coordinates Set:", details);
+                                } else {
+                                    console.error("Error: Location data missing in API response.", details);
+                                    alert("Could not fetch location details. Please try again.");
+                                }
+                            })
+                            .catch((error) => {
+                                console.error("Error fetching place details:", error);
+                                alert("Error fetching location details.");
+                            });
+                        });
+
+                        suggestionsBox.appendChild(option);
+                    });
+                } else {
+                    suggestionsBox.style.display = "none";
+                }
+            })
+            .catch((error) => console.error("Error fetching autocomplete data:", error));
+    });
+
+    // Hide the suggestions if clicking outside
+    document.addEventListener("click", function (event) {
+        if (!suggestionsBox.contains(event.target) && event.target !== searchInput) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+});
+
+    
+</script>
+
+<style>
+
+    #restaurant-suggestions {
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    #restaurant-suggestions .dropdown-item {
+        padding: 10px;
+        cursor: pointer;
+        color: #000 !important;
+    }
+
+    #restaurant-suggestions .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #000 !important;
+    }
+
+    .form-range {
+        width: 100%;
+        background: linear-gradient(to right, #007bff 50%, #ddd 50%);
+        border-radius: 5px;
+        height: 6px;
+        margin: 0;
+    }
+
+    .form-range::-webkit-slider-thumb, .form-range::-moz-range-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #007bff;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-range:focus {
+        outline: none;
+    }
+</style>
+
+{% endblock %}

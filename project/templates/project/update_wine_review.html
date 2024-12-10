@@ -1,0 +1,235 @@
+{% extends "project/base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Update Wine Review</h2>
+<!-- Wine Review Update Form -->
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Wine Information Section -->
+    <h4 class="mt-4">Wine Information</h4>
+
+    <!-- Wine Name -->
+    <div class="form-group mb-3">
+        <label for="wine_name">Wine Name</label>
+        <input type="text" id="wine_name" name="wine_name" class="form-control" value="{{ wine_name }}" required>
+    </div>
+
+    <!-- Varietal -->
+    <div class="form-group mb-3">
+        <label for="varietal">Varietal</label>
+        <input type="text" id="varietal" name="varietal" class="form-control" value="{{ varietal }}">
+    </div>
+
+    <!-- Image URL -->
+    <div class="form-group mb-3">
+        <label for="{{ form.image_url.id_for_label }}">Image URL (Optional)</label>
+        {{ form.image_url }}
+    </div>
+
+    <!-- Review Text -->
+    <div class="form-group mb-3">
+        <label for="review_text">Review Text</label>
+        <textarea id="review_text" name="review_text" class="form-control">{{ form.instance.review_text }}</textarea>
+    </div>
+
+    <!-- Country Dropdown -->
+    <div class="form-group mb-3">
+        <label for="country_of_origin">Country of Origin</label>
+        <select id="country_of_origin" name="country_of_origin" class="form-select">
+            <option value="">Select a country</option>
+            {% for code, name in countries %}
+            <option value="{{ code }}" {% if form.instance.country_of_origin == code %}selected{% endif %}>
+                {{ name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Restaurant Search -->
+    <div class="form-group">
+        <label for="restaurant-search">Restaurant</label>
+        <input
+            type="text"
+            id="restaurant-search"
+            name="restaurant_name"
+            class="form-control"
+            value="{{ restaurant_name|default:'' }}"
+            placeholder="Search for a restaurant..."
+            autocomplete="off"
+        />
+        <div id="restaurant-suggestions" class="dropdown-menu" style="display: none;"></div>
+    </div>
+
+    <!-- Hidden Fields for Restaurant Info -->
+    <input type="hidden" id="restaurant_name" name="restaurant_name" />
+    <input type="hidden" id="latitude" name="latitude" />
+    <input type="hidden" id="longitude" name="longitude" />
+
+    <!-- Wine Ratings Section -->
+    <h4 class="mt-4">Wine Ratings</h4>
+    <div class="form-group mb-3">
+        <label for="overall_rating">Overall Rating</label>
+        <input type="range" id="overall_rating" name="rating" class="form-range" min="0" max="10" value="{{ form.instance.rating }}">
+        <span id="overall_rating_value" class="fw-bold">{{ form.instance.rating }}</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="body_rating">Body Rating</label>
+        <input type="range" id="body_rating" name="body_rating" class="form-range" min="0" max="10" value="{{ form.instance.body_rating }}">
+        <span id="body_rating_value" class="fw-bold">{{ form.instance.body_rating }}</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="finish_rating">Finish Rating</label>
+        <input type="range" id="finish_rating" name="finish_rating" class="form-range" min="0" max="10" value="{{ form.instance.finish_rating }}">
+        <span id="finish_rating_value" class="fw-bold">{{ form.instance.finish_rating }}</span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="taste_rating">Taste Rating</label>
+        <input type="range" id="taste_rating" name="taste_rating" class="form-range" min="0" max="10" value="{{ form.instance.taste_rating }}">
+        <span id="taste_rating_value" class="fw-bold">{{ form.instance.taste_rating }}</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Review</button>
+</form>
+
+<form action="{% url 'profile' form.instance.user.userprofile.pk %}">
+    <button type="submit" class="btn btn-secondary mt-3">Cancel</button>
+</form>
+
+<script>
+    /**
+     * Updates the displayed value of the rating sliders
+     */
+     const updateSliderValue = (inputId, displayId) => {
+        const input = document.getElementById(inputId);
+        const display = document.getElementById(displayId);
+
+        input.addEventListener('input', () => {
+            display.textContent = input.value;
+        });
+
+        display.textContent = input.value;
+    };
+
+    // Initialize sliders and their displays
+    updateSliderValue('overall_rating', 'overall_rating_value');
+    updateSliderValue('body_rating', 'body_rating_value');
+    updateSliderValue('finish_rating', 'finish_rating_value');
+    updateSliderValue('taste_rating', 'taste_rating_value');
+
+    /**
+     * Restaurant search with Google Places API
+     */
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("restaurant-search");
+        const suggestionsBox = document.getElementById("restaurant-suggestions");
+        const restaurantNameField = document.getElementById("restaurant_name");
+        const latitudeField = document.getElementById("latitude");
+        const longitudeField = document.getElementById("longitude");
+
+        searchInput.addEventListener("input", function () {
+            const query = searchInput.value.trim();
+
+            if (query.length < 3) {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            // Fetch Autocomplete Suggestions
+            fetch(`/project/google-places-autocomplete?input=${encodeURIComponent(query)}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    suggestionsBox.innerHTML = "";
+                    suggestionsBox.style.display = "block";
+
+                    if (data.predictions && data.predictions.length > 0) {
+                        data.predictions.forEach((place) => {
+                            const option = document.createElement("div");
+                            option.className = "dropdown-item";
+                            option.textContent = place.description;
+                            option.dataset.placeId = place.place_id;
+
+                            // Handle Place Selection
+                            option.addEventListener("click", () => {
+                                searchInput.value = place.description;
+                                restaurantNameField.value = place.description;
+                                suggestionsBox.style.display = "none";
+
+                                // Fetch place details
+                                fetch(`/project/google-places-details?place_id=${place.place_id}`)
+                                    .then((response) => response.json())
+                                    .then((details) => {
+                                        if (details && "lat" in details && "lng" in details) {
+                                            latitudeField.value = details.lat;
+                                            longitudeField.value = details.lng;
+                                        } else {
+                                            alert("Could not fetch location details. Try again.");
+                                        }
+                                    })
+                                    .catch((error) =>
+                                        console.error("Error fetching place details:", error)
+                                    );
+                            });
+
+                            suggestionsBox.appendChild(option);
+                        });
+                    } else {
+                        suggestionsBox.style.display = "none";
+                    }
+                })
+                .catch((error) => console.error("Error fetching autocomplete data:", error));
+        });
+        
+        // Hide Suggestions When Clicking Outside
+        document.addEventListener("click", function (event) {
+            if (!suggestionsBox.contains(event.target) && event.target !== searchInput) {
+                suggestionsBox.style.display = "none";
+            }
+        });
+    });
+</script>
+    
+<style>
+    #restaurant-suggestions {
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    #restaurant-suggestions .dropdown-item {
+        padding: 10px;
+        cursor: pointer;
+        color: black !important;
+    }
+
+    #restaurant-suggestions .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: black !important;
+    }
+
+
+    .form-range {
+        width: 100%;
+        background: linear-gradient(to right, #007bff 50%, #ddd 50%);
+        border-radius: 5px;
+        height: 6px;
+        margin: 0;
+    }
+
+    .form-range::-webkit-slider-thumb, .form-range::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #007bff;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'restaurant', #new app
     'mini_fb', #new app
     'voter_analytics', #new app
+    'project',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +124,7 @@ USE_TZ = True
 
 ## tell Django about our static resources directory:
 import os
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
@@ -136,3 +137,9 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect to 'project' after successful login
+LOGIN_REDIRECT_URL = '/project/'
+LOGOUT_REDIRECT_URL = '/login/'
+
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', 'AIzaSyDN88EqfNcjqXBkMlI--KOhI5Jf7X1Q-vQ')
