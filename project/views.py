@@ -20,6 +20,8 @@ import os
 from django.db.models import F
 from django.http import HttpResponseRedirect
 from random import sample
+import pandas as pd
+
 
 logger = logging.getLogger(__name__)
 
@@ -590,3 +592,17 @@ def get_place_website(request):
     except Exception as e:
         logger.error(f"Error fetching place details: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
+
+def load_wine_data():
+    session = boto3.session.Session(
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+        region_name=os.getenv("AWS_S3_REGION_NAME"),
+    )
+    s3 = session.resource('s3')
+    obj = s3.Object('project-wine-data-cs412', 'winedata.csv')
+    data = obj.get()['Body'].read().decode('utf-8')
+
+    # Load CSV into pandas DataFrame
+    df = pd.read_csv(pd.compat.StringIO(data))
+    return df
