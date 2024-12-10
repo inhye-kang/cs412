@@ -10,7 +10,7 @@ from . import views
 
 urlpatterns = [
     # --- Home & Authentication ---
-    path('home/', MainFeedView.as_view(), name='home'),
+    path('', MainFeedView.as_view(), name='home'),
     path('login/', LoginView.as_view(template_name='project/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 
