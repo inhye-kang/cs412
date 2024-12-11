@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Import wines from CSV for lookup'
 
     def handle(self, *args, **kwargs):
-        csv_file = 'project/data/winedata.csv'
+        csv_file = 'project/data/winedatashort.csv'
         
         data = pd.read_csv(csv_file)
         

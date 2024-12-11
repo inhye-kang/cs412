@@ -2,3 +2,7 @@
 project/data/wine.csv
 project/data/dataset.csv
 project/data/winedata.csv
+db.sqlite3
+app_backup.json
+db_backup.sqlite3
+project/data/
