@@ -20,6 +20,8 @@ from django.db.models import F
 from django.http import HttpResponseRedirect
 from random import sample
 import pandas as pd
+import boto3
+from django.contrib.auth.models import User
 
 
 logger = logging.getLogger(__name__)
@@ -86,6 +88,7 @@ class CreateProfileView(CreateView):
         # Create and log in the new user
         if user_form.is_valid():
             user = user_form.save()
+            user.refresh_from_db()
             username = user_form.cleaned_data.get('username')
             password = user_form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
