@@ -144,10 +144,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/project/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', 'AIzaSyDN88EqfNcjqXBkMlI--KOhI5Jf7X1Q-vQ')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', 'default-google-api-key')
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = 'project-wine-data-cs412'
 AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com
