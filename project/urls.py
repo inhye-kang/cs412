@@ -1,5 +1,7 @@
 # urls.py
 from django.urls import path
+from django.contrib.auth import views as auth_views ## NEW
+
 from .views import (
     CreateProfileView, ShowProfileView, UpdateWineReviewView, 
     MainFeedView, WineLookupView, UpdateProfileView,  CreateWineReviewView, 
@@ -11,8 +13,8 @@ from . import views
 urlpatterns = [
     # --- Home & Authentication ---
     path('', MainFeedView.as_view(), name='home'),
-    path('login/', LoginView.as_view(template_name='project/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('login/', auth_views.LoginView.as_view(template_name='project/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     # --- Profile ---
     path('create_new_profile/', CreateProfileView.as_view(), name='create_new_profile'),
