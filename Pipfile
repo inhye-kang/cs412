@@ -13,6 +13,7 @@ django-countries = "*"
 requests = "*"
 django-heroku = "*"
 dj-database-url = "*"
+django-on-heroku = "*"
 
 [dev-packages]
 
