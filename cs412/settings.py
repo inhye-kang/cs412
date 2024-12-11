@@ -141,8 +141,10 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Redirect to 'project' after successful login
-LOGIN_REDIRECT_URL = '/project/'
-LOGOUT_REDIRECT_URL = '/login/'
+
+LOGIN_URL = '/login/'  # Correct path to the login page
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', 'default-google-api-key')
 

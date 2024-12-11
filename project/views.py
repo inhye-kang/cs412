@@ -7,7 +7,6 @@ from django.contrib.auth import login, authenticate
 from .models import UserProfile, Review, LookupWine, Wine, Favorite
 from .forms import CreateProfileForm, ReviewForm
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django_countries import countries
 from django_countries.fields import CountryField
@@ -188,9 +187,12 @@ class CreateWineReviewView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
         # Create or retrieve the wine
-        wine = Wine.objects.get(
+        wine, created = Wine.objects.get_or_create(
             name=wine_name,
-            defaults={'varietal': varietal, 'country_of_origin': country_of_origin}
+            defaults={
+                'varietal': varietal,
+                'country_of_origin': country_of_origin
+            }
         )
 
         # Assign validated data to the form instance
